@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION calculate_bonus(
+    p_salary IN NUMBER,
+    p_score IN NUMBER
+) RETURN NUMBER IS
+    v_bonus NUMBER(10,2) := 0;
+BEGIN
+    -- Business logic for bonus tiers
+    IF p_score >= 4.5 THEN
+        v_bonus := p_salary * 0.15; -- 15% Bonus
+    ELSIF p_score >= 3.5 THEN
+        v_bonus := p_salary * 0.08; -- 8% Bonus
+    ELSE
+        v_bonus := p_salary * 0.02; -- 2% Minimal Bonus
+    END IF;
+    
+    RETURN v_bonus;
+END calculate_bonus;
+/
