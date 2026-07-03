@@ -1,0 +1,29 @@
+Problem Definition: The Corporate Performance & Bonus Bottleneck
+The Real-World Scenario
+In modern companies, human resource (HR) departments and managers face a massive headache at the end of every quarter: evaluating employee performance and distributing financial bonuses fairly.
+
+To do this right, managers cannot look at an employee's numbers in a vacuum. They have to answer complex comparative questions:
+
+Who are the top performers relative to their specific peers in the same department?
+
+Is an employee's salary wildly above or below their department's average?
+
+Based on their performance rating, what exact bonus amount do they qualify for?
+
+The Traditional Problem (Why companies struggle)
+Historically, companies try to solve this using spreadsheets (like Excel) or by pulling raw data into software application code (like Java or Python) to do the math. This creates major issues:
+
+Performance Sluggishness: Pulling thousands of rows out of a database to calculate running averages and rankings in an external app wastes network bandwidth and memory.
+
+Data Desynchronization: If someone updates an employee's salary in the database while HR is calculating rankings in Excel, the final report becomes completely inaccurate.
+
+Complexity: Calculating hierarchical ranks manually requires writing messy, nested loops that are prone to bugs.
+
+The Database Programming Solution
+Instead of moving data out of the database to process it, we bring the processing logic directly to the data using PL/SQL.
+
+By leveraging database-level programming, we build an automated analytics engine inside the database server itself. This solves the problem seamlessly:
+
+We use Window Functions to instantly calculate department averages and peer-to-peer rankings in a single, lightning-fast step without collapsing the individual rows.
+
+We use Stored Procedures and Functions to lock the company's official bonus calculation rules directly into the database schema. This guarantees that no matter who runs the report, the math is identical, highly secure, and perfectly up to date.
