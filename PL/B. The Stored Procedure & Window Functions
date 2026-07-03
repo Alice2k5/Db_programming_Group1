@@ -1,0 +1,55 @@
+CREATE OR REPLACE PROCEDURE generate_performance_report IS
+    -- Cursor combining window functions and our standalone PL/SQL function
+    CURSOR c_emp_report IS
+        SELECT 
+            e.employee_id,
+            e.first_name || ' ' || e.last_name AS full_name,
+            d.department_name,
+            e.salary,
+            e.performance_score,
+            -- Window Function 1: Rank employees by score within their department
+            DENSE_RANK() OVER (
+                PARTITION BY e.department_id 
+                ORDER BY e.performance_score DESC
+            ) AS dept_rank,
+            -- Window Function 2: Calculate average salary of the department
+            AVG(e.salary) OVER (
+                PARTITION BY e.department_id
+            ) AS dept_avg_salary
+        FROM employees e
+        JOIN departments d ON e.department_id = d.department_id;
+        
+    v_bonus NUMBER(10,2);
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(RPAD('-', 95, '-'));
+    DBMS_OUTPUT.PUT_LINE(
+        RPAD('NAME', 18) || 
+        RPAD('DEPARTMENT', 15) || 
+        RPAD('SALARY', 10) || 
+        RPAD('SCORE', 8) || 
+        RPAD('RANK', 8) || 
+        RPAD('DEPT_AVG', 12) || 
+        'CALCULATED_BONUS'
+    );
+    DBMS_OUTPUT.PUT_LINE(RPAD('-', 95, '-'));
+
+    FOR r IN c_emp_report LOOP
+        -- Call our custom function inside the loop
+        v_bonus := calculate_bonus(r.salary, r.performance_score);
+        
+        DBMS_OUTPUT.PUT_LINE(
+            RPAD(r.full_name, 18) || 
+            RPAD(r.department_name, 15) || 
+            RPAD(TO_CHAR(r.salary), 10) || 
+            RPAD(TO_CHAR(r.performance_score), 8) || 
+            RPAD(TO_CHAR(r.dept_rank), 8) || 
+            RPAD(TO_CHAR(ROUND(r.dept_avg_salary, 2)), 12) || 
+            TO_CHAR(v_bonus)
+        );
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE(RPAD('-', 95, '-'));
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END generate_performance_report;
+/
