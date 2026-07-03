@@ -1,0 +1,8 @@
+SET SERVEROUTPUT ON;
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Executing Corporate Performance and Bonus Analytics Engine...');
+    -- Call the stored procedure
+    generate_performance_report;
+END;
+/
